@@ -3,7 +3,7 @@ package unifaj.trabalho.jogodama;
 import java.util.Map;
 
 public class PartidaDama {
-
+	
 	 private Map<Integer, Jogador> jogadores;
 	
 	 public void jogar() {
