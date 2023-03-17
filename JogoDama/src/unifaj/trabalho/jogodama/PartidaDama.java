@@ -4,8 +4,13 @@ import java.util.Map;
 
 public class PartidaDama {
 	
+	 private Tabuleiro tabuleiro;
 	 private Map<Integer, Jogador> jogadores;
 	
+	 public PartidaDama() {
+		 
+	 }
+	 
 	 public void jogar() {
 		 
 	 }
