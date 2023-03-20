@@ -9,20 +9,26 @@ public class Tabuleiro {
 	 private List<String> casasDisponiveis;
 	 
 	 public Tabuleiro() {
-		 final String[] colunasImpar = {"A", "C", "E", "G"};
-		 final String[] colunasPar = {"B", "D", "F", "H"};
+		 final char[] colunasImpar = {'A', 'C', 'E', 'G'};
+		 final char[] colunasPar = {'B', 'D', 'F', 'H'};
 		 this.casasDisponiveis = new ArrayList<>();
-		 for(byte linha = 0; linha <= 8; linha++) {
-			 String[] colunas = linha % 2 == 0 ? colunasPar: colunasImpar;
-	    	 for(String coluna : colunas) {
-	    		 this.casasDisponiveis.add(linha + coluna);
+		 for(byte linha = 0; linha < 8; linha++) {
+	    	 for(char coluna : linha % 2 == 0 ? colunasPar: colunasImpar) {
+	    		 this.casasDisponiveis.add(String.valueOf(linha) + coluna);
 	    	 }
 		 }
 		 this.casasVazias = new LinkedList<>();
+		 final int meioTabuleiro = this.casasDisponiveis.size() / 2;
+		 this.casasVazias = this.casasDisponiveis.subList(meioTabuleiro - 4, meioTabuleiro + 4);
 	 }
 	 
-	 public boolean validarMovimento(String destino){
-		return false; 
+	 
+	public String descricao() {
+		return "Tabuleiro [casasVazias=" + casasVazias + ", casasDisponiveis=" + casasDisponiveis + "]";
+	}
+
+	public boolean validarMovimento(String destino){
+		return false;
 	 }
 	 
 	 public void addCasaVazia(String casa) {
@@ -32,4 +38,11 @@ public class Tabuleiro {
 	 public void removerCasaVazia(String casa) {
 		 
 	 }
+
+
+	public List<String> getCasasDisponiveis() {
+		return casasDisponiveis;
+	}
+	 
+	 
 }

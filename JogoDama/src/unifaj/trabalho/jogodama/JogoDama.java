@@ -11,10 +11,16 @@ public class JogoDama {
 	}
 
 	private void comecarJogo(Scanner sc) {
-		atualizarJogo(sc);
+		PartidaDama partidaDama = new PartidaDama(new Jogador[] {new Jogador(sc.nextLine()), new Jogador(sc.nextLine())});
+		partidaDama.iniciarJogo(sc);
+		atualizarJogo(partidaDama, sc);
 	}
 
-	private String atualizarJogo(Scanner sc) {
-		return "Está funfando";
+	private String atualizarJogo(PartidaDama partidaDama, Scanner sc) {
+		partidaDama.jogar(sc);
+		if(String.valueOf(sc.nextLine()).equals("Sair")) {
+			return "Partida Finalizada";
+		}
+		return atualizarJogo(partidaDama, sc);
 	}
 }

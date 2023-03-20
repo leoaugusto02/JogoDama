@@ -13,9 +13,9 @@ public class Jogador {
 		pecasJogador = new ArrayList<>();
 		this.pecasCapturadas = 0;
 	}
-
+	
 	public String descricao() {
-		return "Jogador apelido=" + apelido + "\npecasJogador=" + pecasJogador + "\npecasCapturadas=" + pecasCapturadas;
+		return "Jogador apelido= " + apelido + "\npecasJogador= " + pecasJogador + "\npecasCapturadas= " + pecasCapturadas;
 	}
 	
 	public void perderPeca(String peca) {
@@ -27,11 +27,11 @@ public class Jogador {
 		pecasJogador.add(peca);
 	}
 	
-	public void pecaCapturada() {
+	private void pecaCapturada() {
 		this.pecasCapturadas += 1;
 	}
 	
-	public boolean validarPeca() {
+	private boolean validarPeca() {
 		return false;
 	}
 }
