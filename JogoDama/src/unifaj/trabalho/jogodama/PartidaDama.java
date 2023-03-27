@@ -99,10 +99,10 @@ public class PartidaDama {
 	 }
 	 
 	 private boolean verificarMovimentoDestino(int[] origem, int[] destino) {
-		 if(tabuleiro[destino[0]][destino[1]] != null || 
-				 destino[0] != origem[0] + 1 ||
-				 destino[1] != origem[1] - 1 ||
-				 destino[1] != origem[1] + 1) {
+		 int linha = jogadorTurno == 1 ? origem[0] + 1 : origem[0] - 1;
+		 if(tabuleiro[destino[0]][destino[1]] != null ||
+				 destino[0] != linha ||
+				 (destino[1] != origem[1] - 1 && destino[1] != origem[1] + 1)) {
 			 return false;
 		 }
 		 
@@ -135,7 +135,5 @@ public class PartidaDama {
 	 private boolean validarPecaCaptura() {
 		 return false;
 	 }
-	 
-	 
 	 
 }
