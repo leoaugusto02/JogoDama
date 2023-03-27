@@ -11,7 +11,7 @@ public class JogoDama {
 	}
 
 	private void comecarJogo(Scanner sc) {
-		PartidaDama partidaDama = new PartidaDama(new Jogador[] {new Jogador(sc.nextLine()), new Jogador(sc.nextLine())});
+		PartidaDama partidaDama = new PartidaDama((byte) 8);
 		partidaDama.iniciarJogo(sc);
 		atualizarJogo(partidaDama, sc);
 	}
