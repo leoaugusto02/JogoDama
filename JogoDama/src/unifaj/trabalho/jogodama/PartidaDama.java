@@ -10,11 +10,13 @@ public class PartidaDama {
 	 private PecaJogador[][] tabuleiro;
 	 private Map<Byte, Jogador> jogadores;
 	 private byte jogadorTurno;
-	
+	 private PecaJogador pecaCaptura;
+	 
 	 public PartidaDama(byte tamanho) {
 		 this.tabuleiro = Arrays.stream(new PecaJogador[tamanho][tamanho]).toArray(PecaJogador[][]::new);
 		 this.jogadores = new HashMap<>();
 		 this.jogadorTurno = 1;
+		 this.pecaCaptura = null;
 	 } 
 	 
 	 
