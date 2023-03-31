@@ -1,7 +1,9 @@
 package unifaj.trabalho.jogodama;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -10,13 +12,13 @@ public class PartidaDama {
 	 private PecaJogador[][] tabuleiro;
 	 private Map<Byte, Jogador> jogadores;
 	 private byte jogadorTurno;
-	 private PecaJogador pecaCaptura;
+	 private List<PecaJogador> pecasCaptura;
 	 
 	 public PartidaDama(byte tamanho) {
 		 this.tabuleiro = Arrays.stream(new PecaJogador[tamanho][tamanho]).toArray(PecaJogador[][]::new);
 		 this.jogadores = new HashMap<>();
 		 this.jogadorTurno = 1;
-		 this.pecaCaptura = null;
+		 this.pecasCaptura = new ArrayList<>();
 	 } 
 	 
 	 
@@ -94,6 +96,7 @@ public class PartidaDama {
 			 final String pecaDestino = converterCoordenada(sc.nextLine());
 			 final int[] destino = {Integer.parseInt(pecaDestino.substring(0, 1)), Integer.parseInt(pecaDestino.substring(1))};
 			 if(verificarMovimentoDestino(origem, destino)) {
+				 verificarCaptura(destino);
 				 return destino;
 			 }
 			 System.out.println("Movimento invalido");
@@ -111,7 +114,35 @@ public class PartidaDama {
 		 return true;
 	 }
 	 
-	 
+	 //Verifica se a peça pode ser capturada
+	 private void verificarCaptura(int[] destino) {
+		 final int linhaBaixo = destino[0] - 1;
+		 final int linhaCima = destino[0] + 1;
+		 final int colunaEsq = destino[1] - 1;
+		 final int colunaDir =  destino[1] + 1;
+		 
+		 //Valida os cantos
+		 if(linhaBaixo > -1 && linhaCima < 8 && colunaEsq > -1 && colunaDir < 8) {
+			 PecaJogador pecaSuperiorEsq = tabuleiro[linhaCima][colunaEsq];
+			 PecaJogador pecaInferiorEsq = tabuleiro[linhaBaixo][colunaEsq];
+			 PecaJogador pecaSuperiorDir = tabuleiro[linhaCima][colunaDir];
+			 PecaJogador pecaInferiorDir = tabuleiro[linhaBaixo][colunaDir];
+			 
+			 //Diagonal Esquerda
+			 if(pecaInferiorDir == null && pecaSuperiorEsq != null && !pecaSuperiorEsq.validarPeca(jogadores.get(jogadorTurno))) {
+				 pecasCaptura.add(pecaSuperiorEsq);
+			 } else if(pecaSuperiorEsq == null && pecaInferiorDir != null && !pecaInferiorDir.validarPeca(jogadores.get(jogadorTurno))) {
+				 pecasCaptura.add(pecaInferiorDir);
+			 }
+			 
+			//Diagonal Direita
+			 if(pecaInferiorEsq == null && pecaSuperiorDir != null && !pecaSuperiorDir.validarPeca(jogadores.get(jogadorTurno))) {
+				 pecasCaptura.add(pecaSuperiorDir);
+			 } else if(pecaSuperiorDir == null && pecaInferiorEsq != null && !pecaInferiorEsq.validarPeca(jogadores.get(jogadorTurno))) {
+				 pecasCaptura.add(pecaInferiorEsq);
+			 } 
+		 }
+	 }
 	 
 	 private String converterCoordenada(String coordenada){
 		 return Integer.parseInt(coordenada.substring(0, 1)) - 1 + "" + ((int) coordenada.charAt(1) - 64 - 1);
