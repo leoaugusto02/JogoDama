@@ -3,6 +3,7 @@ package unifaj.trabalho.jogodama;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -12,13 +13,15 @@ public class PartidaDama {
 	 private PecaJogador[][] tabuleiro;
 	 private Map<Byte, Jogador> jogadores;
 	 private byte jogadorTurno;
-	 private List<PecaJogador> pecasCaptura;
+	 private boolean flagCaptura;
+	 private Map<PecaJogador, List<int[]>> pecasCaptura;
 	 
 	 public PartidaDama(byte tamanho) {
 		 this.tabuleiro = Arrays.stream(new PecaJogador[tamanho][tamanho]).toArray(PecaJogador[][]::new);
 		 this.jogadores = new HashMap<>();
 		 this.jogadorTurno = 1;
-		 this.pecasCaptura = new ArrayList<>();
+		 this.flagCaptura = false;
+		 this.pecasCaptura = new HashMap<>();
 	 } 
 	 
 	 
@@ -34,7 +37,7 @@ public class PartidaDama {
 			 
 			 for(int linha = (limiteCasasJogador - this.tabuleiro.length/2) + 1; linha < limiteCasasJogador; linha++) {
 				 for(int coluna = 0; coluna < this.tabuleiro.length; coluna++) {
-					 tabuleiro[linha][coluna] = linha % 2 == 0 && coluna % 2 == 0 ? addPeca(jogador, corPeca, linha, coluna)
+					 this.tabuleiro[linha][coluna] = linha % 2 == 0 && coluna % 2 == 0 ? addPeca(jogador, corPeca, linha, coluna)
 							  : linha % 2 != 0 && coluna % 2 != 0 ? addPeca(jogador, corPeca, linha, coluna) : null;
 				 }
 			 }
@@ -44,25 +47,60 @@ public class PartidaDama {
 		 
 	 }
 	 
+	 private PecaJogador addPeca(Jogador jogador, String corPeca, int linha, int coluna) {
+		 return new PecaJogador(jogador, corPeca, new int[] {linha, coluna});
+	 }
+	 
 	 public void jogar(Scanner sc) {
 		 for(byte linha = 0; linha < this.tabuleiro.length; linha++) {
 			 System.out.println("[ ");
 			 for(byte coluna = 0; coluna < this.tabuleiro.length; coluna++) {
-				 System.out.println(tabuleiro[linha][coluna] + ", ");
+				 System.out.println(this.tabuleiro[linha][coluna] + ", ");
 				 
 			 }
 			 System.out.println("]\n");
 		 }
 		 
-		 System.out.println("Turno Jogador " + jogadorTurno);
+		 this.flagCaptura = this.pecasCaptura.size() > 0;
+		 
+		 System.out.println("Turno Jogador " + this.jogadorTurno);
 		 
 		 final int[] origem = selecionarOrigem(sc);
 		 final int[] destino = selecionarDestino(origem, sc);
 		 
 		 
-		 moverPeca(origem, destino);
+		 if(flagCaptura) {
+			 flagCaptura = false;
+			 moverPecaCaptura(origem, destino);
+		 } else {
+			 moverPeca(origem, destino);
+		 }
 		 
-		 this.jogadorTurno = (byte) (jogadorTurno == 1 ? 2 : 1);
+		 this.jogadorTurno = (byte) (this.jogadorTurno == 1 ? 2 : 1);
+	 }
+	 
+	 private void moverPecaCaptura(int[] origem, int[] destino) {
+		 int pecaCapturadaLinha = destino[0] > origem[0] ? destino[0] - 1 : origem[0] - 1;
+		 int pecaCapturadaColuna = destino[1] > origem[1] ? destino[1] - 1 : origem[1] - 1;
+		 
+		 this.tabuleiro[pecaCapturadaLinha][pecaCapturadaColuna] = null;
+		 
+		 this.jogadores.get(this.jogadorTurno).pecaCapturada();
+		 
+		 PecaJogador pecaCaptura = this.tabuleiro[origem[0]][origem[1]];
+		 if(this.pecasCaptura.get(pecaCaptura).size() == 0) {
+			 this.pecasCaptura.remove(pecaCaptura);
+		 }
+		 moverPeca(origem, destino);
+	 }
+	 
+	 private void moverPeca(int[] origem, int[] destino) {
+		 PecaJogador pecaSelecionada = this.tabuleiro[origem[0]][origem[1]];
+		 System.out.println(pecaSelecionada.descricao());
+		 this.tabuleiro[origem[0]][origem[1]] = null;
+		 
+		 this.tabuleiro[destino[0]][destino[1]] = pecaSelecionada;
+		 pecaSelecionada.setPos(destino);
 	 }
 	 
 	 private int[] selecionarOrigem(Scanner sc){
@@ -78,12 +116,21 @@ public class PartidaDama {
 	 }
 	 
 	 private boolean verificarMovimentoOrigem(int[] origem) {
-		 PecaJogador pecaJogador = tabuleiro[origem[0]][origem[1]];
-		 int linha = jogadorTurno == 1 ? origem[0] + 1 : origem[0] - 1;
+		 PecaJogador pecaJogador = this.tabuleiro[origem[0]][origem[1]]; 
+		 
+		 if(this.pecasCaptura.size() > 0) {
+			 if(!this.pecasCaptura.containsKey(pecaJogador)) {
+				 return false;
+			 }
+			 
+			 return true;
+		 }
+		 
+		 int linha = this.jogadorTurno == 1 ? origem[0] + 1 : origem[0] - 1;
 		 if(pecaJogador == null ||
-				 !pecaJogador.validarPeca(jogadores.get(jogadorTurno)) ||
-				 (origem[1] - 1 > -1 && tabuleiro[linha][origem[1] - 1] != null) ||
-				 (origem[1] + 1 < 8 && tabuleiro[linha][origem[1] + 1] != null)) {
+				 !pecaJogador.validarPeca(this.jogadores.get(this.jogadorTurno)) ||
+				 (origem[1] - 1 > -1 && this.tabuleiro[linha][origem[1] - 1] != null) ||
+				 (origem[1] + 1 < 8 && this.tabuleiro[linha][origem[1] + 1] != null)) {
 			 return false;
 		 }
 		 
@@ -96,7 +143,7 @@ public class PartidaDama {
 			 final String pecaDestino = converterCoordenada(sc.nextLine());
 			 final int[] destino = {Integer.parseInt(pecaDestino.substring(0, 1)), Integer.parseInt(pecaDestino.substring(1))};
 			 if(verificarMovimentoDestino(origem, destino)) {
-				 verificarCaptura(destino);
+				 verificarCaptura(this.tabuleiro[origem[0]][origem[1]], destino);
 				 return destino;
 			 }
 			 System.out.println("Movimento invalido");
@@ -104,8 +151,17 @@ public class PartidaDama {
 	 }
 	 
 	 private boolean verificarMovimentoDestino(int[] origem, int[] destino) {
-		 int linha = jogadorTurno == 1 ? origem[0] + 1 : origem[0] - 1;
-		 if(tabuleiro[destino[0]][destino[1]] != null ||
+		 if(this.pecasCaptura.size() > 0) {
+			 List<int[]> destinoCaptura = this.pecasCaptura.get(this.tabuleiro[origem[0]][origem[1]]);
+			 if(!Arrays.equals(destinoCaptura.get(0), destino)) { 
+				 return false;
+			 }
+			 destinoCaptura.remove(0);
+			 return true;
+		 }
+		 
+		 int linha = this.jogadorTurno == 1 ? origem[0] + 1 : origem[0] - 1;
+		 if(this.tabuleiro[destino[0]][destino[1]] != null ||
 				 destino[0] != linha ||
 				 (destino[1] != origem[1] - 1 && destino[1] != origem[1] + 1)) {
 			 return false;
@@ -115,7 +171,7 @@ public class PartidaDama {
 	 }
 	 
 	 //Verifica se a peça pode ser capturada
-	 private void verificarCaptura(int[] destino) {
+	 private void verificarCaptura(PecaJogador pecaOrigem, int[] destino) {
 		 final int linhaBaixo = destino[0] - 1;
 		 final int linhaCima = destino[0] + 1;
 		 final int colunaEsq = destino[1] - 1;
@@ -123,50 +179,45 @@ public class PartidaDama {
 		 
 		 //Valida os cantos
 		 if(linhaBaixo > -1 && linhaCima < 8 && colunaEsq > -1 && colunaDir < 8) {
-			 PecaJogador pecaSuperiorEsq = tabuleiro[linhaCima][colunaEsq];
-			 PecaJogador pecaInferiorEsq = tabuleiro[linhaBaixo][colunaEsq];
-			 PecaJogador pecaSuperiorDir = tabuleiro[linhaCima][colunaDir];
-			 PecaJogador pecaInferiorDir = tabuleiro[linhaBaixo][colunaDir];
+			 PecaJogador pecaSuperiorEsq = verificaPecasIguais(this.tabuleiro[linhaCima][colunaEsq], pecaOrigem);
+			 PecaJogador pecaInferiorEsq = verificaPecasIguais(this.tabuleiro[linhaBaixo][colunaEsq], pecaOrigem);
+			 PecaJogador pecaSuperiorDir = verificaPecasIguais(this.tabuleiro[linhaCima][colunaDir], pecaOrigem);
+			 PecaJogador pecaInferiorDir = verificaPecasIguais(this.tabuleiro[linhaBaixo][colunaDir], pecaOrigem);
 			 
-			 //Diagonal Esquerda
-			 if(pecaInferiorDir == null && pecaSuperiorEsq != null && !pecaSuperiorEsq.validarPeca(jogadores.get(jogadorTurno))) {
-				 pecasCaptura.add(pecaSuperiorEsq);
-			 } else if(pecaSuperiorEsq == null && pecaInferiorDir != null && !pecaInferiorDir.validarPeca(jogadores.get(jogadorTurno))) {
-				 pecasCaptura.add(pecaInferiorDir);
+			 Jogador jogador = this.jogadores.get(this.jogadorTurno);
+			 
+			 //Diagonal Esquerda - Direita
+			 if(pecaInferiorDir == null && pecaSuperiorEsq != null && !pecaSuperiorEsq.validarPeca(jogador)) {
+				 addPecaCaptura(pecaSuperiorEsq, new int[]{linhaBaixo, colunaDir});
+			 } else if(pecaSuperiorEsq == null && pecaInferiorDir != null && !pecaInferiorDir.validarPeca(jogador)) {
+				 addPecaCaptura(pecaInferiorDir, new int[]{linhaCima, colunaEsq});
 			 }
 			 
-			//Diagonal Direita
-			 if(pecaInferiorEsq == null && pecaSuperiorDir != null && !pecaSuperiorDir.validarPeca(jogadores.get(jogadorTurno))) {
-				 pecasCaptura.add(pecaSuperiorDir);
-			 } else if(pecaSuperiorDir == null && pecaInferiorEsq != null && !pecaInferiorEsq.validarPeca(jogadores.get(jogadorTurno))) {
-				 pecasCaptura.add(pecaInferiorEsq);
+			//Diagonal Direita - Esquerda
+			 if(pecaInferiorEsq == null && pecaSuperiorDir != null && !pecaSuperiorDir.validarPeca(jogador)) {
+				 addPecaCaptura(pecaSuperiorDir, new int[]{linhaBaixo, colunaEsq});
+			 } else if(pecaSuperiorDir == null && pecaInferiorEsq != null && !pecaInferiorEsq.validarPeca(jogador)) {
+				 addPecaCaptura(pecaInferiorEsq, new int[]{linhaCima, colunaDir});
 			 } 
 		 }
+	 }
+	 
+	 private void addPecaCaptura(PecaJogador pecaCaptura, int[] casaDestinoCaptura) {
+		 List<int[]> destinoCaptura = this.pecasCaptura.containsKey(pecaCaptura) 
+				 ? this.pecasCaptura.get(pecaCaptura)
+				 : new LinkedList<>();
+		 destinoCaptura.add(casaDestinoCaptura);
+		 this.pecasCaptura.put(pecaCaptura, destinoCaptura);
+	 }
+	 
+	 //Verifica se a peça é a mesma da origem
+	 private PecaJogador verificaPecasIguais(PecaJogador pecaCaptura, PecaJogador pecaOrigem) {
+		 return pecaOrigem == pecaCaptura ? null : pecaCaptura;
 	 }
 	 
 	 private String converterCoordenada(String coordenada){
 		 return Integer.parseInt(coordenada.substring(0, 1)) - 1 + "" + ((int) coordenada.charAt(1) - 64 - 1);
 	 }
 	 
-	 private PecaJogador addPeca(Jogador jogador, String corPeca, int linha, int coluna) {
-		 return new PecaJogador(jogador, corPeca, linha + "" + coluna);
-	 }
-	 
-	 private void moverPeca(int[] origem, int[] destino) {
-		 PecaJogador pecaSelecionada = tabuleiro[origem[0]][origem[1]];
-		 System.out.println(pecaSelecionada.descricao());
-		 tabuleiro[origem[0]][origem[1]] = null;
-		 
-		 tabuleiro[destino[0]][destino[1]] = pecaSelecionada;
-		 pecaSelecionada.setPos(destino[0] + "" + destino[1]);
-	 }
-	 
-	 private boolean capturarPeca() {
-		 return false;
-	 }
-	 
-	 private boolean validarPecaCaptura() {
-		 return false;
-	 }
-	 
+
 }

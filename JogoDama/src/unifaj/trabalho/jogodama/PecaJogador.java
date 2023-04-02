@@ -3,9 +3,9 @@ package unifaj.trabalho.jogodama;
 public class PecaJogador {
 	private Jogador jogador;
 	private Peca peca;
-	private String pos;
+	private int[] pos;
 	
-	public PecaJogador(Jogador jogador, String corPeca, String posPeca) {
+	public PecaJogador(Jogador jogador, String corPeca, int[] posPeca) {
 		this.jogador = jogador;
 		this.pos = posPeca;
 		this.peca = new Peca(corPeca);
@@ -19,12 +19,11 @@ public class PecaJogador {
 		return this.jogador == jogador;
 	}
 
-
-	public String getPos() {
+	public int[] getPos() {
 		return pos;
 	}
 	
-	public void setPos(String pos) {
+	public void setPos(int[] pos) {
 		this.pos = pos;
 	}
 	

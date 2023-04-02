@@ -9,6 +9,10 @@ public class Jogador {
 		this.pecasCapturadas = 0;
 	}
 	
+	public void pecaCapturada() {
+		this.pecasCapturadas++;
+	}
+	
 	public String descricao() {
 		return "Jogador apelido= " + apelido + "\npecasCapturadas= " + pecasCapturadas;
 	}
