@@ -14,7 +14,7 @@ public class PartidaDama {
 	 private Map<Byte, Jogador> jogadores;
 	 private byte jogadorTurno;
 	 private boolean flagCaptura;
-	 private Map<PecaJogador, ArvoreCaptura> pecasCaptura;
+	 private Map<PecaJogador, List<int[]>> pecasCaptura;
 	 
 	 public PartidaDama(byte tamanho) {
 		 this.tabuleiro = Arrays.stream(new PecaJogador[tamanho][tamanho]).toArray(PecaJogador[][]::new);
@@ -71,16 +71,16 @@ public class PartidaDama {
 		 if(flagCaptura) {
 			 flagCaptura = false;
 			 moverPecaCaptura(origem, destino);
-			 verificarMultiCaptura();
+			 buscarMelhorJogada();
 		 } else {
 			 moverPeca(origem, destino);
-			 verificarCaptura(destino);
+			 buscarCaptura(destino);
 		 }
 		 
 		 this.jogadorTurno = (byte) (this.jogadorTurno == 1 ? 2 : 1);
 	 }
 	 
-	 private void verificarMultiCaptura() {
+	 private void buscarMelhorJogada() {
 		 for(PecaJogador pecaCaptura : pecasCaptura.keySet()) {
 			 int[] origemCaptura = pecaCaptura.getPos();
 
@@ -89,7 +89,7 @@ public class PartidaDama {
 	 }
 	 
 	//Verifica se a peça pode ser capturada
-	 private void verificarCaptura(int[] destino) {
+	 private void buscarCaptura(int[] destino) {
 			 final int linhaBaixo = destino[0] - 1;
 			 final int linhaCima = destino[0] + 1;
 			 final int colunaEsq = destino[1] - 1;
@@ -126,7 +126,7 @@ public class PartidaDama {
 					 : new LinkedList<>();
 			 destinoCaptura.add(casaDestinoCaptura);
 			 this.pecasCaptura.put(pecaCaptura, destinoCaptura);
-		 }
+	 }
 	 
 	 private void moverPecaCaptura(int[] origem, int[] destino) {
 		 int pecaCapturadaLinha = destino[0] > origem[0] ? destino[0] - 1 : origem[0] - 1;
