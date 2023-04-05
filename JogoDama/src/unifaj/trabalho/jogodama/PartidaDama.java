@@ -84,7 +84,7 @@ public class PartidaDama {
 		 List<Integer> jogadas = new ArrayList<>();
 		 for(PecaJogador pecaCaptura : pecasCaptura.keySet()) {
 			 int[] destinoCaptura = pecaCaptura.getPos();
-			 int jogadas = calcularJogada(destinoCaptura);
+			 int j = calcularJogada(destinoCaptura);
 		 }
 		 
 	 }
@@ -104,21 +104,25 @@ public class PartidaDama {
 		 
 		 Jogador jogador = this.jogadores.get(this.jogadorTurno);
 		 
-		 //Diagonal Esquerda - Direita
-		 if(pecaInferiorDir == null && pecaSuperiorEsq != null && !pecaSuperiorEsq.validarPeca(jogador)) {
+		 //Diagonal Esquerda
+		 if(pecaSuperiorEsq != null && ) {
 			 addPecaCaptura(pecaSuperiorEsq, new int[]{linhaBaixo, colunaDir});
-		 } else if(pecaSuperiorEsq == null && pecaInferiorDir != null && !pecaInferiorDir.validarPeca(jogador)) {
+		 }
+		 
+		 if (pecaSuperiorEsq == null && pecaInferiorDir != null && !pecaInferiorDir.validarPeca(jogador)) {
 			 addPecaCaptura(pecaInferiorDir, new int[]{linhaCima, colunaEsq});
 		 }
 		 
 		//Diagonal Direita - Esquerda
 		 if(pecaInferiorEsq == null && pecaSuperiorDir != null && !pecaSuperiorDir.validarPeca(jogador)) {
 			 addPecaCaptura(pecaSuperiorDir, new int[]{linhaBaixo, colunaEsq});
-		 } else if(pecaSuperiorDir == null && pecaInferiorEsq != null && !pecaInferiorEsq.validarPeca(jogador)) {
+		 }
+		 
+		 if(pecaSuperiorDir == null && pecaInferiorEsq != null && !pecaInferiorEsq.validarPeca(jogador)) {
 			 addPecaCaptura(pecaInferiorEsq, new int[]{linhaCima, colunaDir});
 		 }
 		 
-		 return 1;
+		 return 0;
 	 }
 	 
 	//Verifica se a peça pode ser capturada
