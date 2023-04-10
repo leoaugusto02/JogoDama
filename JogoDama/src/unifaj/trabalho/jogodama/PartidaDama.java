@@ -21,7 +21,7 @@ public class PartidaDama {
 	public PartidaDama(byte tamanho) {
 		this.tabuleiro = Arrays.stream(new PecaJogador[tamanho][tamanho]).toArray(PecaJogador[][]::new);
 		this.jogadores = new HashMap<>();
-		this.jogadorTurno = 2;
+		this.jogadorTurno = 1;
 		this.flagCaptura = false;
 		this.pecasCaptura = new HashMap<>();
 		this.capturaAtual = new Captura();
