@@ -23,6 +23,14 @@ public class PecaJogador {
 		return pos;
 	}
 	
+	public boolean getDama() {
+		return this.getDama();
+	}
+	
+	public void isDama() {
+		peca.isDama();
+	}
+	
 	public void setPos(int[] pos) {
 		this.pos = pos;
 	}

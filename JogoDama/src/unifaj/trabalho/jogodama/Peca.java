@@ -14,7 +14,11 @@ public class Peca {
 	}
 
 
-	public void setDama(boolean dama) {
+	public void isDama() {
+		this.dama = true;
+	}
+	
+	public void getDama(boolean dama) {
 		this.dama = dama;
 	}
 	

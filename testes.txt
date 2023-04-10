@@ -1,0 +1,17 @@
+// Teste 1 - Multi
+this.tabuleiro[7][3] = addPeca(this.jogadores.get((byte) 2), "preto", 7, 3);
+this.tabuleiro[4][6] = addPeca(this.jogadores.get((byte) 2), "preto", 4, 6);
+this.tabuleiro[3][7] = addPeca(this.jogadores.get((byte) 1), "branco", 3, 7);
+
+
+// Teste 2 - Multi
+this.tabuleiro[5][7] = addPeca(this.jogadores.get((byte) 2), "preto", 5, 7);
+		
+this.tabuleiro[4][4] = addPeca(this.jogadores.get((byte) 2), "preto", 4, 4);
+this.tabuleiro[4][2] = addPeca(this.jogadores.get((byte) 2), "preto", 4, 2);
+
+this.tabuleiro[6][2] = addPeca(this.jogadores.get((byte) 2), "preto", 6, 2);
+this.tabuleiro[6][4] = addPeca(this.jogadores.get((byte) 2), "preto", 6, 4);
+this.tabuleiro[6][6] = addPeca(this.jogadores.get((byte) 2), "preto", 6, 6);
+
+this.tabuleiro[3][7] = addPeca(this.jogadores.get((byte) 1), "branco", 3, 7);
