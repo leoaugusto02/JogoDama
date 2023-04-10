@@ -6,7 +6,7 @@ import java.util.List;
 public class Captura {
 	private PecaJogador pecaCapturada;
 	private int[] localDestino;
-	private int profundidade;
+	private int jogadasPossiveis;
 	private List<Captura> proxCaptura;
 
 	public Captura() {
@@ -16,7 +16,7 @@ public class Captura {
 		this.pecaCapturada = pecaCapturada;
 		this.localDestino = localDestino;
 		this.proxCaptura = new ArrayList<>();
-		this.profundidade = 0;
+		this.jogadasPossiveis = 1;
 	}
 
 	public PecaJogador getPecaCapturada() {
@@ -35,27 +35,27 @@ public class Captura {
 		return this.proxCaptura;
 	}
 
-	public int getProfundidade() {
-		return this.profundidade;
+	public int getJogadasPossiveis() {
+		return this.jogadasPossiveis;
 	}
 
 	public void buscarMelhorJogada() {
 		proxCaptura.forEach(captura -> {
-			profundidade += 1 + captura.aumentarProfundidade();
+			this.jogadasPossiveis = 1 + captura.incrementarNovaJogada();
 		});
 		
-		int maiorProfundidade = proxCaptura.stream()
-				.mapToInt(captura -> captura.profundidade)
+		int maiorNumeroJogadas = proxCaptura.stream()
+				.mapToInt(captura -> captura.jogadasPossiveis)
 				.max()
 				.orElse(0);
 		
-		proxCaptura.removeIf(captura -> captura.profundidade < maiorProfundidade);
+		proxCaptura.removeIf(captura -> captura.jogadasPossiveis < maiorNumeroJogadas);
 	}
 
-	private int aumentarProfundidade() {
+	private int incrementarNovaJogada() {
 		if(!this.proxCaptura.isEmpty()) {
 			this.buscarMelhorJogada();
 		}
-		return this.profundidade;
+		return this.jogadasPossiveis;
 	}
 }

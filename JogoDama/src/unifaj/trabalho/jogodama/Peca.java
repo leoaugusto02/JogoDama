@@ -13,13 +13,12 @@ public class Peca {
 		return "cor= " + cor + "\ndama= " + dama;
 	}
 
-
-	public void isDama() {
-		this.dama = true;
+	public boolean isDama() {
+		return dama;
 	}
-	
-	public void getDama(boolean dama) {
-		this.dama = dama;
+
+	public void setDama() {
+		this.dama = !dama;
 	}
 	
 }

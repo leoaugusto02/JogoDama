@@ -13,14 +13,12 @@ public class JogoDama {
 	private void comecarJogo(Scanner sc) {
 		PartidaDama partidaDama = new PartidaDama((byte) 8);
 		partidaDama.iniciarJogo(sc);
-		atualizarJogo(partidaDama, sc);
+		System.out.println(atualizarJogo(partidaDama, sc));
 	}
 
 	private String atualizarJogo(PartidaDama partidaDama, Scanner sc) {
 		partidaDama.jogar(sc);
-		if(String.valueOf(sc.nextLine()).equals("Sair")) {
-			return "Partida Finalizada";
-		}
-		return atualizarJogo(partidaDama, sc);
+		String avalicaoPartida = partidaDama.avaliarPartida();
+		return !avalicaoPartida.isEmpty() ? avalicaoPartida : atualizarJogo(partidaDama, sc);
 	}
 }

@@ -15,3 +15,15 @@ this.tabuleiro[6][4] = addPeca(this.jogadores.get((byte) 2), "preto", 6, 4);
 this.tabuleiro[6][6] = addPeca(this.jogadores.get((byte) 2), "preto", 6, 6);
 
 this.tabuleiro[3][7] = addPeca(this.jogadores.get((byte) 1), "branco", 3, 7);
+
+// Teste 3 - Multi
+this.tabuleiro[4][5] = addPeca(this.jogadores.get((byte) 2), "preto", 4, 5);
+this.tabuleiro[5][2] = addPeca(this.jogadores.get((byte) 2), "preto", 5, 2);
+this.tabuleiro[5][4] = addPeca(this.jogadores.get((byte) 2), "preto", 5, 4);
+
+this.tabuleiro[2][3] = addPeca(this.jogadores.get((byte) 1), "branco", 2, 3);
+this.tabuleiro[2][5] = addPeca(this.jogadores.get((byte) 1), "branco", 2, 5);
+
+// Tese 4 - Dama
+this.tabuleiro[1][1] = addPeca(this.jogadores.get((byte) 2), "preto", 1, 1);
+this.tabuleiro[6][4] = addPeca(this.jogadores.get((byte) 1), "branco", 6, 4);
