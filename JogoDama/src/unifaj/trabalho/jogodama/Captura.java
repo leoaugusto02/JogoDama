@@ -41,7 +41,7 @@ public class Captura {
 
 	public void buscarMelhorJogada() {
 		proxCaptura.forEach(captura -> {
-			captura.profundidade = 1 + captura.aumentarProfundidade();
+			captura.profundidade += 1 + captura.aumentarProfundidade();
 		});
 		
 		int maiorProfundidade = proxCaptura.stream()
@@ -56,6 +56,6 @@ public class Captura {
 		if(!this.proxCaptura.isEmpty()) {
 			this.buscarMelhorJogada();
 		}
-		return 0;
+		return this.profundidade;
 	}
 }

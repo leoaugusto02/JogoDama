@@ -16,4 +16,13 @@ public class Jogador {
 	public String descricao() {
 		return "Jogador apelido= " + apelido + "\npecasCapturadas= " + pecasCapturadas;
 	}
+
+	public String getApelido() {
+		return this.apelido;
+	}
+
+	public byte getPecasCapturadas() {
+		return this.pecasCapturadas;
+	}
+	
 }
